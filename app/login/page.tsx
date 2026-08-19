@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
-export default function Login() {
+function LoginForm() {
   const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [adminChecking, setAdminChecking] =
     useState(false);
@@ -61,9 +60,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * KULLANICININ ROLÜNÜ BUL
-     */
     setAdminChecking(true);
 
     const {
@@ -78,9 +74,6 @@ export default function Login() {
     setAdminChecking(false);
     setLoading(false);
 
-    /*
-     * Veritabanı hatası
-     */
     if (roleError) {
       console.error(
         "Rol kontrolü:",
@@ -96,9 +89,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * ADMIN MODUNDA GİRİŞ
-     */
     if (adminMode) {
       if (
         !adminUser ||
@@ -118,9 +108,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * SAHA PERSONELİ
-     */
     if (
       adminUser?.role ===
       "saha_personeli"
@@ -130,9 +117,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * TAM YETKİLİ ADMIN
-     */
     if (
       adminUser?.role === "admin"
     ) {
@@ -141,10 +125,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * admin_users içinde olmayan
-     * normal kullanıcı
-     */
     window.location.href = "/";
   }
 
@@ -155,10 +135,6 @@ export default function Login() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    /*
-     * Giriş yapılmamışsa
-     * admin giriş moduna geç
-     */
     if (!user) {
       setAdminChecking(false);
 
@@ -168,9 +144,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * Mevcut kullanıcının rolünü kontrol et
-     */
     const {
       data,
       error,
@@ -195,9 +168,6 @@ export default function Login() {
       return;
     }
 
-    /*
-     * Sadece admin girebilir
-     */
     if (
       !data ||
       data.role !== "admin"
@@ -375,5 +345,21 @@ export default function Login() {
       </div>
 
     </main>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+          <div className="text-slate-400">
+            Yükleniyor...
+          </div>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
