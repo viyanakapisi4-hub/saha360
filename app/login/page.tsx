@@ -202,7 +202,7 @@ function LoginForm() {
 
           <h1 className="text-4xl font-black">
 
-            SAHA
+            Saha
             <span className="text-blue-500">
               360
             </span>
