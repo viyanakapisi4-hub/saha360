@@ -211,11 +211,11 @@ function LoginForm() {
 
           <p className="text-slate-400 mt-2">
 
-            {adminMode
-              ? "Yönetici Paneli Girişi"
-              : "Yönetici Girişi"}
+  {adminMode
+    ? "Yönetici Paneli Girişi"
+    : "Personel Girişi"}
 
-          </p>
+</p>
 
         </div>
 
